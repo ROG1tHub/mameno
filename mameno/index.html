@@ -1,620 +1,86 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Mameno</title>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
-
-  :root {
-    --primary: #6f4bdf;
-    --primary-light: #d1c8ff;
-    --gray-light: #f5f5fa;
-    --gray-medium: #7a7a7a;
-    --gray-dark: #222;
-    --bg: #fafbff;
-    --shadow: 0 10px 30px rgba(111, 75, 223, 0.20);
-  }
-
-  * {
-    box-sizing: border-box;
-  }
-
-  body, html {
-    margin: 0; padding: 0; height: 100%;
-    background-color: var(--bg);
-    font-family: 'Inter', sans-serif;
-    color: var(--gray-dark);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-
-  #app {
-    width: 400px;
-  }
-
-  .card, #training-screen {
-    background: white;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    padding: 38px 30px 44px;
-    text-align: center;
-  }
-
-  /* Logo cerebro rompecabezas */
-  .icon-container {
-    width: 56px;
-    height: 56px;
-    background: var(--primary-light);
-    border-radius: 16px;
-    margin: 0 auto 18px;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  svg.puzzle-brain {
-    width: 36px;
-    height: 36px;
-    fill: var(--primary);
-  }
-
-  h1 {
-    font-weight: 900;
-    font-size: 32px;
-    margin: 0 0 6px;
-  }
-
-  .subtitle {
-    font-weight: 400;
-    font-size: 15px;
-    color: var(--gray-medium);
-    margin-bottom: 32px;
-  }
-
-  /* Progreso */
-  .progress-header {
-    font-weight: 700;
-    font-size: 16px;
-    color: var(--gray-dark);
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 8px;
-  }
-  .progress-header svg {
-    width: 22px;
-    height: 22px;
-    fill: var(--primary);
-  }
-  .progress-subtext {
-    font-weight: 400;
-    font-size: 13px;
-    color: var(--gray-medium);
-    margin-bottom: 24px;
-  }
-
-  /* Nivel y sesiones */
-  .level-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 22px;
-  }
-
-  .level-info {
-    text-align: left;
-  }
-
-  .level-label {
-    font-weight: 600;
-    font-size: 10px;
-    color: var(--gray-medium);
-    letter-spacing: 1.4px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
-
-  .level-name {
-    font-weight: 900;
-    font-size: 26px;
-    color: var(--primary);
-    vertical-align: middle;
-  }
-
-  .level-range {
-    display: inline-block;
-    font-weight: 600;
-    font-size: 12px;
-    background-color: var(--primary-light);
-    color: var(--primary);
-    padding: 4px 12px;
-    border-radius: 30px;
-    margin-left: 12px;
-    vertical-align: middle;
-  }
-
-  .sessions-info {
-    text-align: right;
-  }
-
-  .sessions-number {
-    font-weight: 900;
-    font-size: 42px;
-    color: var(--gray-dark);
-    line-height: 1;
-  }
-
-  .sessions-label {
-    font-weight: 400;
-    font-size: 14px;
-    color: var(--gray-medium);
-    text-transform: capitalize;
-  }
-
-  /* Barra progreso */
-  .progress-bar-container {
-    width: 100%;
-    height: 10px;
-    background: var(--gray-light);
-    border-radius: 14px;
-    overflow: hidden;
-    margin-bottom: 34px;
-  }
-
-  .progress-bar-fill {
-    height: 10px;
-    background: linear-gradient(90deg, #6f4bdf 0%, #8A70FF 100%);
-    width: 0%;
-    border-radius: 14px;
-    transition: width 0.5s ease;
-  }
-
-  /* Siguiente desafío */
-  .next-challenge {
-    background: #f0f1ff;
-    border-radius: 18px;
-    padding: 22px 24px;
-    font-weight: 400;
-    font-size: 14px;
-    color: var(--gray-dark);
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: 38px;
-    user-select: none;
-  }
-  .next-challenge svg {
-    width: 26px;
-    height: 26px;
-    fill: #56d2a6;
-    flex-shrink: 0;
-  }
-
-  /* Botón comenzar */
-  #start-btn {
-    background: linear-gradient(90deg, #6f4bdf 0%, #8A70FF 100%);
-    border: none;
-    border-radius: 30px;
-    width: 100%;
-    padding: 20px;
-    font-weight: 900;
-    font-size: 20px;
-    color: white;
-    cursor: pointer;
-    user-select: none;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 12px;
-    transition: background-color 0.2s ease;
-  }
-  #start-btn:hover:not(:disabled) {
-    background: linear-gradient(90deg, #5a39bb 0%, #7a52ff 100%);
-  }
-  #start-btn:disabled {
-    opacity: 0.7;
-    cursor: default;
-  }
-
-  #start-btn svg {
-    width: 22px;
-    height: 22px;
-    fill: white;
-  }
-
-  /* Pantalla de entrenamiento */
-  #training-screen {
-    display: none;
-    background: white;
-    border-radius: 20px;
-    box-shadow: var(--shadow);
-    padding: 40px 36px 48px;
-    text-align: center;
-  }
-  #sequence-display {
-    font-size: 54px;
-    font-weight: 900;
-    min-height: 84px;
-    color: var(--primary);
-    margin-bottom: 40px;
-  }
-
-  #expression-display {
-    font-size: 18px;
-    font-weight: 700;
-    color: var(--gray-dark);
-    margin-top: 18px;
-    word-wrap: break-word;
-    min-height: 24px;
-  }
-
-  #answer-input {
-    margin-top: 18px;
-  }
-  #user-answer {
-    padding: 16px 22px;
-    width: 200px;
-    font-size: 26px;
-    border-radius: 28px;
-    border: 2px solid var(--primary);
-    outline: none;
-    font-weight: 900;
-    text-align: center;
-  }
-  #submit-answer {
-    padding: 16px 32px;
-    margin-left: 16px;
-    font-weight: 900;
-    font-size: 22px;
-    color: white;
-    background: var(--primary);
-    border: none;
-    border-radius: 28px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  #submit-answer:hover {
-    background: #5939bb;
-  }
-
-  #result-text {
-    margin-top: 28px;
-    font-weight: 900;
-    font-size: 20px;
-    min-height: 30px;
-  }
-
-  #back-btn {
-    margin-top: 48px;
-    background: transparent;
-    border: none;
-    color: var(--primary);
-    font-weight: 700;
-    font-size: 16px;
-    cursor: pointer;
-    letter-spacing: 1.2px;
-  }
-
-  /* Selector idioma */
-  #lang-selector {
-    position: fixed;
-    top: 20px;
-    right: 24px;
-    font-weight: 700;
-    font-size: 14px;
-    color: var(--gray-medium);
-    user-select: none;
-    cursor: pointer;
-  }
-  #lang-selector:hover {
-    color: var(--primary);
-  }
-</style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Mameno</title>
+  <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <div id="app">
+    <!-- Pantalla principal -->
+    <div class="card" id="welcome-screen" role="main" aria-label="Pantalla principal Mameno">
+      <div class="icon-container" aria-hidden="true" title="Logo Mameno – cerebro rompecabezas">
+        <svg class="puzzle-brain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false">
+          <g fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
+            <path d="M14 12h8v8h-8z"/>
+            <path d="M30 12h8v8h-8z"/>
+            <path d="M14 30h8v8h-8z"/>
+            <path d="M30 30h8v8h-8z"/>
+            <circle cx="20" cy="20" r="4" fill="var(--primary)" stroke="none"/>
+            <circle cx="36" cy="20" r="4" fill="var(--primary)" stroke="none"/>
+            <circle cx="20" cy="36" r="4" fill="var(--primary)" stroke="none"/>
+            <circle cx="36" cy="36" r="4" fill="var(--primary)" stroke="none"/>
+          </g>
+        </svg>
+      </div>
+      <h1>Mameno</h1>
+      <div class="subtitle">Entrena tu memoria de trabajo y velocidad de cálculo.</div>
 
-<div id="app">
-  <!-- Pantalla principal -->
-  <div class="card" id="welcome-screen" role="main" aria-label="Pantalla principal Mameno">
-    <div class="icon-container" aria-hidden="true" title="Logo Mameno – cerebro rompecabezas">
-      <svg class="puzzle-brain" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" aria-hidden="true" focusable="false" >
-        <g fill="none" stroke="var(--primary)" stroke-width="3" stroke-linejoin="round" stroke-linecap="round">
-          <path d="M14 12h8v8h-8z"/>
-          <path d="M30 12h8v8h-8z"/>
-          <path d="M14 30h8v8h-8z"/>
-          <path d="M30 30h8v8h-8z"/>
-          <circle cx="20" cy="20" r="4" fill="var(--primary)" stroke="none"/>
-          <circle cx="36" cy="20" r="4" fill="var(--primary)" stroke="none"/>
-          <circle cx="20" cy="36" r="4" fill="var(--primary)" stroke="none"/>
-          <circle cx="36" cy="36" r="4" fill="var(--primary)" stroke="none"/>
-        </g>
-      </svg>
-    </div>
-    <h1>Mameno</h1>
-    <div class="subtitle">Entrena tu memoria de trabajo y velocidad de cálculo.</div>
+      <div class="progress-header">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
+        Tu Progreso
+      </div>
+      <div class="progress-subtext">Sube de nivel completando sesiones</div>
 
-    <div class="progress-header">
-      <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"/></svg>
-      Tu Progreso
-    </div>
-    <div class="progress-subtext">Sube de nivel completando sesiones</div>
-
-    <div class="level-row" aria-label="Nivel actual y sesiones completadas">
-      <div class="level-info">
-        <div class="level-label">NIVEL ACTUAL</div>
-        <div>
-          <span class="level-name" id="level-current">Principiante I</span>
-          <span class="level-range" id="level-range">1-10</span>
+      <div class="level-row" aria-label="Nivel actual y sesiones completadas">
+        <div class="level-info">
+          <div class="level-label">NIVEL ACTUAL</div>
+          <div>
+            <span class="level-name" id="level-current">Principiante I</span>
+            <span class="level-range" id="level-range">1-10</span>
+          </div>
+        </div>
+        <div class="sessions-info" aria-live="polite">
+          <div class="sessions-number" id="sessions-completed">0</div>
+          <div class="sessions-label">Sesiones Completadas</div>
         </div>
       </div>
-      <div class="sessions-info" aria-live="polite">
-        <div class="sessions-number" id="sessions-completed">0</div>
-        <div class="sessions-label">Sesiones Completadas</div>
+
+      <div class="progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progreso hacia el siguiente rango">
+        <div class="progress-bar-fill" id="progress-bar-fill"></div>
       </div>
+
+      <div class="next-challenge" id="next-challenge" aria-live="polite">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#56d2a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <div id="next-challenge-text">Alcanza 10 sesiones para desbloquear el rango 1-20.</div>
+      </div>
+
+      <button id="start-btn" aria-label="Comenzar Entrenamiento">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
+        Comenzar Entrenamiento
+      </button>
     </div>
 
-    <div class="progress-bar-container" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" aria-label="Progreso hacia el siguiente rango">
-      <div class="progress-bar-fill" id="progress-bar-fill"></div>
+    <!-- Pantalla Entrenamiento -->
+    <div id="training-screen" role="main" aria-label="Pantalla de entrenamiento Mameno" style="display:none;">
+      <div id="sequence-display" aria-live="polite" aria-atomic="true"></div>
+      <div id="expression-display" aria-live="polite"></div>
+
+      <div id="answer-input">
+        <input type="number" id="user-answer" aria-label="Ingresa el resultado" placeholder="Ingresa el resultado" autocomplete="off" />
+        <button id="submit-answer" aria-label="Enviar respuesta">Enviar</button>
+      </div>
+
+      <div id="result-text" role="alert" aria-live="assertive"></div>
+
+      <button id="back-btn" aria-label="Volver a pantalla principal">← Volver</button>
     </div>
 
-    <div class="next-challenge" id="next-challenge" aria-live="polite">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="#56d2a6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-      <div id="next-challenge-text">Alcanza 10 sesiones para desbloquear el rango 1-20.</div>
-    </div>
-
-    <button id="start-btn" aria-label="Comenzar">
-      <svg xmlns="http://www.w3.org/2000/svg" fill="white" viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      Comenzar
-    </button>
+    <!-- Selector idioma -->
+    <div id="lang-selector" aria-label="Cambiar idioma" role="button" tabindex="0" title="Cambiar idioma">🌐 EN</div>
   </div>
 
-  <!-- Pantalla Entrenamiento -->
-  <div id="training-screen" role="main" aria-label="Pantalla de entrenamiento Mameno" style="display:none;">
-    <div id="sequence-display" aria-live="polite" aria-atomic="true"></div>
-    <div id="expression-display" aria-live="polite"></div>
-
-    <div id="answer-input">
-      <input type="number" id="user-answer" aria-label="Ingresa el resultado" placeholder="Ingresa el resultado" autocomplete="off" />
-      <button id="submit-answer" aria-label="Enviar respuesta">Enviar</button>
-    </div>
-
-    <div id="result-text" role="alert" aria-live="assertive"></div>
-
-    <button id="back-btn" aria-label="Volver a pantalla principal">← Volver</button>
-  </div>
-
-  <!-- Selector idioma -->
-  <div id="lang-selector" aria-label="Cambiar idioma" role="button" tabindex="0" title="Cambiar idioma">🌐 EN</div>
-</div>
-
-<script>
-const levels = [
-  { name: "Principiante I", range: "1-10", maxNum: 20, sessionsRequired: 10 },
-  { name: "Principiante II", range: "1-20", maxNum: 20, sessionsRequired: 10 },
-  { name: "Intermedio I",  range: "1-30", maxNum: 40, sessionsRequired: 20 },
-  { name: "Intermedio II", range: "1-40", maxNum: 40, sessionsRequired: 20 },
-  { name: "Avanzado",      range: "1-50", maxNum: 50, sessionsRequired: 20 },
-  { name: "Experto",       range: "1-70", maxNum: 70, sessionsRequired: 20 },
-  { name: "Maestro",       range: "1-99", maxNum: 99, sessionsRequired: 20 },
-];
-
-let progress = parseInt(localStorage.getItem("mamenoProgress")) || 0;
-let currentLevelIndex = 0;
-let correctAnswer = 0;
-let sequenceNumbers = [];
-let sequenceOperators = [];
-let showingSequence = false;
-
-const levelCurrentEl = document.getElementById("level-current");
-const levelRangeEl = document.getElementById("level-range");
-const sessionsCompletedEl = document.getElementById("sessions-completed");
-const progressBarFill = document.getElementById("progress-bar-fill");
-const nextChallengeText = document.getElementById("next-challenge-text");
-const startBtn = document.getElementById("start-btn");
-const langSelector = document.getElementById("lang-selector");
-const welcomeScreen = document.getElementById("welcome-screen");
-const trainingScreen = document.getElementById("training-screen");
-const sequenceDisplay = document.getElementById("sequence-display");
-const expressionDisplay = document.getElementById("expression-display");
-const answerInput = document.getElementById("answer-input");
-const userAnswerInput = document.getElementById("user-answer");
-const submitAnswerBtn = document.getElementById("submit-answer");
-const resultText = document.getElementById("result-text");
-const backBtn = document.getElementById("back-btn");
-
-function updateLevel() {
-  let sumSessions = 0;
-  for(let i=0; i < levels.length; i++) {
-    sumSessions += levels[i].sessionsRequired;
-    if(progress < sumSessions) {
-      currentLevelIndex = i;
-      return;
-    }
-  }
-  currentLevelIndex = levels.length - 1;
-}
-
-function calculateLevelProgress() {
-  let prevSum = 0;
-  for(let i=0; i < currentLevelIndex; i++) prevSum += levels[i].sessionsRequired;
-  let levelSessions = levels[currentLevelIndex].sessionsRequired;
-  let progressLevel = progress - prevSum;
-  return Math.min(100, (progressLevel / levelSessions)*100);
-}
-
-function updateProgressUI() {
-  updateLevel();
-  let level = levels[currentLevelIndex];
-  levelCurrentEl.textContent = level.name;
-  levelRangeEl.textContent = level.range;
-  sessionsCompletedEl.textContent = progress;
-  progressBarFill.style.width = calculateLevelProgress() + "%";
-
-  if(currentLevelIndex < levels.length - 1) {
-    let sumNeeded = 0;
-    for(let i=0; i<=currentLevelIndex; i++) sumNeeded += levels[i].sessionsRequired;
-    let toNext = sumNeeded - progress;
-    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext > 1 ? "es" : ""} para desbloquear el rango ${levels[currentLevelIndex + 1].range}.`;
-  } else {
-    nextChallengeText.textContent = "¡Has alcanzado el nivel máximo! Sigue practicando para mantener la maestría.";
-  }
-}
-
-function saveProgress() {
-  localStorage.setItem("mamenoProgress", progress);
-}
-
-function getRandomInt(min,max){
-  return Math.floor(Math.random()*(max-min+1)) + min;
-}
-
-function generateSequence(numOps, maxNum) {
-  let nums = [getRandomInt(1,maxNum)];
-  let ops = [];
-  let res = nums[0];
-
-  for(let i=0; i < numOps; i++) {
-    let op = Math.random() < 0.5 ? '+' : '-';
-    let num = getRandomInt(1,maxNum);
-    if(op === '-' && res - num < 0 && Math.random() < 0.8) {
-      op = '+';
-    }
-    ops.push(op);
-    nums.push(num);
-    res = op === '+' ? res + num : res - num;
-  }
-  return {nums, ops, res};
-}
-
-function playBeep() {
-  const ctx = new (window.AudioContext || window.webkitAudioContext)();
-  const o = ctx.createOscillator();
-  const g = ctx.createGain();
-  o.type = 'sine';
-  o.frequency.value = 800;
-  g.gain.value = 0.1;
-  o.connect(g);
-  g.connect(ctx.destination);
-  o.start(0);
-  o.stop(ctx.currentTime + 0.15);
-  o.onended = () => ctx.close();
-}
-
-async function showSequence(nums, ops){
-  showingSequence = true;
-  answerInput.style.display = "none";
-  resultText.textContent = "";
-  expressionDisplay.textContent = "";
-  userAnswerInput.value = "";
-  sequenceDisplay.textContent = "";
-
-  for(let i=0; i < nums.length; i++) {
-    sequenceDisplay.textContent = nums[i];
-    playBeep();
-    await delay(1000);
-    if(i < ops.length){
-      sequenceDisplay.textContent = ops[i];
-      await delay(1000);
-    }
-  }
-  sequenceDisplay.textContent = "";
-  answerInput.style.display = "block";
-  userAnswerInput.focus();
-  showingSequence = false;
-}
-
-function delay(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-async function startChallenge() {
-  if(showingSequence) return;
-  startBtn.disabled = true;
-  let numOps = Math.random() < 0.5 ? 8 : 10;
-  let maxNum = levels[currentLevelIndex].maxNum;
-
-  let seq = generateSequence(numOps, maxNum);
-  sequenceNumbers = seq.nums;
-  sequenceOperators = seq.ops;
-  correctAnswer = seq.res;
-
-  await showSequence(sequenceNumbers, sequenceOperators);
-
-  startBtn.disabled = false;
-}
-
-function buildExpression(nums, ops) {
-  let expr = "";
-  for(let i=0; i < nums.length; i++){
-    expr += nums[i];
-    if(i < ops.length) expr += " " + ops[i] + " ";
-  }
-  return expr;
-}
-
-function checkAnswer() {
-  let val = userAnswerInput.value.trim();
-  if(val === "") {
-    resultText.style.color = "red";
-    resultText.textContent = "Por favor ingresa un número.";
-    return;
-  }
-  let userVal = Number(val);
-  if(userVal === correctAnswer){
-    resultText.style.color = "green";
-    resultText.textContent = "¡Correcto! Bien hecho.";
-    progress++;
-    saveProgress();
-    updateProgressUI();
-    expressionDisplay.textContent = "";
-  } else {
-    resultText.style.color = "red";
-    expressionDisplay.textContent = buildExpression(sequenceNumbers, sequenceOperators) + " = " + correctAnswer;
-    resultText.textContent = "Respuesta incorrecta.";
-  }
-  answerInput.style.display = "none";
-}
-
-function goBack() {
-  trainingScreen.style.display = "none";
-  welcomeScreen.style.display = "block";
-  userAnswerInput.value = "";
-  sequenceDisplay.textContent = "";
-  expressionDisplay.textContent = "";
-  resultText.textContent = "";
-  answerInput.style.display = "none";
-}
-
-startBtn.onclick = () => {
-  welcomeScreen.style.display = "none";
-  trainingScreen.style.display = "block";
-  startChallenge();
-};
-
-submitAnswerBtn.onclick = checkAnswer;
-
-userAnswerInput.addEventListener("keydown", function(e){
-  if(e.key === "Enter") {
-    checkAnswer();
-  }
-});
-
-backBtn.onclick = goBack;
-
-langSelector.onclick = () => {
-  if(langSelector.textContent.trim() === "🌐 EN") {
-    langSelector.textContent = "🌐 ES";
-    alert("Cambio de idioma no implementado. Por ahora solo Español.");
-  } else {
-    langSelector.textContent = "🌐 EN";
-    alert("Idioma principal Español. Cambio no activo.");
-  }
-};
-
-updateProgressUI();
-</script>
-
+  <script src="script.js"></script>
 </body>
 </html>

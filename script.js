@@ -14,6 +14,7 @@ let correctAnswer = 0;
 let sequenceNumbers = [];
 let sequenceOperators = [];
 let showingSequence = false;
+let abortSequence = false; // Nueva variable para abortar secuencia
 
 const levelCurrentEl = document.getElementById("level-current");
 const levelRangeEl = document.getElementById("level-range");
@@ -145,6 +146,7 @@ function playErrorSound() {
 
 async function showSequence(nums, ops){
   showingSequence = true;
+  abortSequence = false; // Reset abort flag
   answerInput.style.display = "none";
   resultText.textContent = "";
   expressionDisplay.textContent = "";
@@ -152,17 +154,21 @@ async function showSequence(nums, ops){
   sequenceDisplay.textContent = "";
 
   for(let i=0; i < nums.length; i++) {
+    if(abortSequence) break; // Abort if back button clicked
     sequenceDisplay.textContent = nums[i];
     playBeep();
     await delay(1000);
     if(i < ops.length){
+      if(abortSequence) break;
       sequenceDisplay.textContent = ops[i];
       await delay(1000);
     }
   }
-  sequenceDisplay.textContent = "";
-  answerInput.style.display = "block";
-  userAnswerInput.focus();
+  if(!abortSequence) {
+    sequenceDisplay.textContent = "";
+    answerInput.style.display = "block";
+    userAnswerInput.focus();
+  }
   showingSequence = false;
 }
 
@@ -221,6 +227,7 @@ function checkAnswer() {
 }
 
 function goBack() {
+  abortSequence = true; // Abort sequence if running
   trainingScreen.style.display = "none";
   welcomeScreen.style.display = "block";
   userAnswerInput.value = "";

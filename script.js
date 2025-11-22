@@ -66,3 +66,4 @@ function updateProgressUI() {
     let toNext = sumNeeded - progress;
 
     nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext}
+}

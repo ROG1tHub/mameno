@@ -64,6 +64,161 @@ function updateProgressUI() {
     let sumNeeded = 0;
     for(let i=0; i<=currentLevelIndex; i++) sumNeeded += levels[i].sessionsRequired;
     let toNext = sumNeeded - progress;
-
-    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext}
+    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext > 1 ? "es" : ""} para desbloquear el rango ${levels[currentLevelIndex + 1].range}.`;
+  } else {
+    nextChallengeText.textContent = "¡Has alcanzado el nivel máximo! Sigue practicando para mantener la maestría.";
+  }
 }
+
+function saveProgress() {
+  localStorage.setItem("mamenoProgress", progress);
+}
+
+function getRandomInt(min,max){
+  return Math.floor(Math.random()*(max-min+1)) + min;
+}
+
+function generateSequence(numOps, maxNum) {
+  let nums = [getRandomInt(1,maxNum)];
+  let ops = [];
+  let res = nums[0];
+
+  for(let i=0; i < numOps; i++) {
+    let op = Math.random() < 0.5 ? '+' : '-';
+    let num = getRandomInt(1,maxNum);
+    if(op === '-' && res - num < 0 && Math.random() < 0.8) {
+      op = '+';
+    }
+    ops.push(op);
+    nums.push(num);
+    res = op === '+' ? res + num : res - num;
+  }
+  return {nums, ops, res};
+}
+
+function playBeep() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.value = 800;
+  g.gain.value = 0.1;
+  o.connect(g);
+  g.connect(ctx.destination);
+  o.start(0);
+  o.stop(ctx.currentTime + 0.15);
+  o.onended = () => ctx.close();
+}
+
+async function showSequence(nums, ops){
+  showingSequence = true;
+  answerInput.style.display = "none";
+  resultText.textContent = "";
+  expressionDisplay.textContent = "";
+  userAnswerInput.value = "";
+  sequenceDisplay.textContent = "";
+
+  for(let i=0; i < nums.length; i++) {
+    sequenceDisplay.textContent = nums[i];
+    playBeep();
+    await delay(1000);
+    if(i < ops.length){
+      sequenceDisplay.textContent = ops[i];
+      await delay(1000);
+    }
+  }
+  sequenceDisplay.textContent = "";
+  answerInput.style.display = "block";
+  userAnswerInput.focus();
+  showingSequence = false;
+}
+
+function delay(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+async function startChallenge() {
+  if(showingSequence) return;
+  startBtn.disabled = true;
+  let numOps = Math.random() < 0.5 ? 8 : 10;
+  let maxNum = levels[currentLevelIndex].maxNum;
+
+  let seq = generateSequence(numOps, maxNum);
+  sequenceNumbers = seq.nums;
+  sequenceOperators = seq.ops;
+  correctAnswer = seq.res;
+
+  await showSequence(sequenceNumbers, sequenceOperators);
+
+  startBtn.disabled = false;
+}
+
+function buildExpression(nums, ops) {
+  let expr = "";
+  for(let i=0; i < nums.length; i++){
+    expr += nums[i];
+    if(i < ops.length) expr += " " + ops[i] + " ";
+  }
+  return expr;
+}
+
+function checkAnswer() {
+  let val = userAnswerInput.value.trim();
+  if(val === "") {
+    resultText.style.color = "red";
+    resultText.textContent = "Por favor ingresa un número.";
+    return;
+  }
+  let userVal = Number(val);
+  if(userVal === correctAnswer){
+    resultText.style.color = "green";
+    resultText.textContent = "¡Correcto! Bien hecho.";
+    progress++;
+    saveProgress();
+    updateProgressUI();
+    expressionDisplay.textContent = "";
+  } else {
+    resultText.style.color = "red";
+    expressionDisplay.textContent = buildExpression(sequenceNumbers, sequenceOperators) + " = " + correctAnswer;
+    resultText.textContent = "Respuesta incorrecta.";
+  }
+  answerInput.style.display = "none";
+}
+
+function goBack() {
+  trainingScreen.style.display = "none";
+  welcomeScreen.style.display = "block";
+  userAnswerInput.value = "";
+  sequenceDisplay.textContent = "";
+  expressionDisplay.textContent = "";
+  resultText.textContent = "";
+  answerInput.style.display = "none";
+}
+
+startBtn.onclick = () => {
+  welcomeScreen.style.display = "none";
+  trainingScreen.style.display = "block";
+  startChallenge();
+};
+
+submitAnswerBtn.onclick = checkAnswer;
+
+userAnswerInput.addEventListener("keydown", function(e){
+  if(e.key === "Enter") {
+    checkAnswer();
+  }
+});
+
+backBtn.onclick = goBack;
+
+langSelector.onclick = () => {
+  if(langSelector.textContent.trim() === "🌐 EN") {
+    langSelector.textContent = "🌐 ES";
+    alert("Cambio de idioma no implementado. Por ahora solo Español.");
+  } else {
+    langSelector.textContent = "🌐 EN";
+    alert("Idioma principal Español. Cambio no activo.");
+  }
+};
+
+updateProgressUI();

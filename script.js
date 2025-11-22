@@ -110,6 +110,39 @@ function playBeep() {
   o.onended = () => ctx.close();
 }
 
+function playSuccessSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sine';
+  o.frequency.setValueAtTime(523, ctx.currentTime); // Nota Do
+  o.frequency.setValueAtTime(659, ctx.currentTime + 0.1); // Mi
+  o.frequency.setValueAtTime(784, ctx.currentTime + 0.2); // Sol
+  g.gain.setValueAtTime(0.3, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
+  o.connect(g);
+  g.connect(ctx.destination);
+  o.start(0);
+  o.stop(ctx.currentTime + 0.5);
+  o.onended = () => ctx.close();
+}
+
+function playErrorSound() {
+  const ctx = new (window.AudioContext || window.webkitAudioContext)();
+  const o = ctx.createOscillator();
+  const g = ctx.createGain();
+  o.type = 'sawtooth';
+  o.frequency.setValueAtTime(200, ctx.currentTime); // Frecuencia baja
+  o.frequency.setValueAtTime(150, ctx.currentTime + 0.2); // Descendente
+  g.gain.setValueAtTime(0.2, ctx.currentTime);
+  g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
+  o.connect(g);
+  g.connect(ctx.destination);
+  o.start(0);
+  o.stop(ctx.currentTime + 0.4);
+  o.onended = () => ctx.close();
+}
+
 async function showSequence(nums, ops){
   showingSequence = true;
   answerInput.style.display = "none";
@@ -173,6 +206,7 @@ function checkAnswer() {
   if(userVal === correctAnswer){
     resultText.style.color = "green";
     resultText.textContent = "¡Correcto! Bien hecho.";
+    playSuccessSound(); // Sonido de festejo
     progress++;
     saveProgress();
     updateProgressUI();
@@ -181,6 +215,7 @@ function checkAnswer() {
     resultText.style.color = "red";
     expressionDisplay.textContent = buildExpression(sequenceNumbers, sequenceOperators) + " = " + correctAnswer;
     resultText.textContent = "Respuesta incorrecta.";
+    playErrorSound(); // Sonido de error
   }
   answerInput.style.display = "none";
 }

@@ -238,10 +238,13 @@ h1 {
 
 #answer-input {
   margin-top: 18px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 #user-answer {
   padding: 16px 22px;
-  width: 220px; /* Aumentado para placeholder legible */
+  width: 240px; /* Aumentado para placeholder legible */
   font-size: 26px;
   border-radius: 28px;
   border: 2px solid var(--primary);
@@ -251,7 +254,7 @@ h1 {
 }
 #submit-answer {
   padding: 16px 32px;
-  margin-left: 20px; /* Más separación */
+  margin-top: 16px; /* Separación vertical del input */
   font-weight: 900;
   font-size: 22px;
   color: white;

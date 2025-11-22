@@ -25,7 +25,9 @@ body, html {
 }
 
 #app {
-  width: 450px; /* Aumentado para más espacio */
+  width: 100%;
+  max-width: 450px;
+  padding: 0 20px; /* Padding lateral para móviles */
 }
 
 .card, #training-screen {
@@ -244,7 +246,7 @@ h1 {
 }
 #user-answer {
   padding: 16px 22px;
-  width: 300px; /* Aumentado para placeholder legible */
+  width: 300px;
   font-size: 26px;
   border-radius: 28px;
   border: 2px solid var(--primary);
@@ -254,7 +256,7 @@ h1 {
 }
 #submit-answer {
   padding: 16px 32px;
-  margin-top: 16px; /* Separación vertical del input */
+  margin-top: 16px;
   font-weight: 900;
   font-size: 22px;
   color: white;
@@ -298,4 +300,44 @@ h1 {
 }
 #lang-selector:hover {
   color: var(--primary);
+}
+
+/* Media Query para Móviles (max-width: 768px) */
+@media (max-width: 768px) {
+  #app {
+    padding: 0 10px; /* Padding pequeño en móviles */
+  }
+
+  .card, #training-screen {
+    padding: 20px 20px 30px; /* Padding reducido en móviles */
+  }
+
+  h1 {
+    font-size: 28px; /* Tamaño reducido para móviles */
+  }
+
+  .level-name {
+    font-size: 24px;
+  }
+
+  .sessions-number {
+    font-size: 38px;
+  }
+
+  #sequence-display {
+    font-size: 48px; /* Tamaño reducido para móviles */
+  }
+
+  #user-answer {
+    width: 280px; /* Ajuste para móviles */
+    font-size: 24px;
+  }
+
+  #submit-answer {
+    font-size: 20px;
+  }
+
+  #result-text {
+    font-size: 18px;
+  }
 }

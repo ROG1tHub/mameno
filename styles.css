@@ -48,7 +48,7 @@ body, html {
   justify-content: center;
   align-items: center;
 }
-svg.brain-icon {
+.brain-hex-icon {
   width: 36px;
   height: 36px;
   fill: var(--primary);
@@ -341,4 +341,5 @@ h1 {
     font-size: 18px;
   }
 }
+
 

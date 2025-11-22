@@ -241,7 +241,7 @@ h1 {
 }
 #user-answer {
   padding: 16px 22px;
-  width: 200px;
+  width: 220px; /* Aumentado para placeholder legible */
   font-size: 26px;
   border-radius: 28px;
   border: 2px solid var(--primary);
@@ -251,7 +251,7 @@ h1 {
 }
 #submit-answer {
   padding: 16px 32px;
-  margin-left: 16px;
+  margin-left: 20px; /* Más separación */
   font-weight: 900;
   font-size: 22px;
   color: white;

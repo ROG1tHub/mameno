@@ -64,4 +64,5 @@ function updateProgressUI() {
     let sumNeeded = 0;
     for(let i=0; i<=currentLevelIndex; i++) sumNeeded += levels[i].sessionsRequired;
     let toNext = sumNeeded - progress;
-    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext
+
+    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext}

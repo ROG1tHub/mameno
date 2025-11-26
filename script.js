@@ -15,6 +15,7 @@ let sequenceNumbers = [];
 let sequenceOperators = [];
 let showingSequence = false;
 let abortSequence = false;
+let userName = localStorage.getItem("mamenoUserName") || null;
 
 const levelCurrentEl = document.getElementById("level-current");
 const levelRangeEl = document.getElementById("level-range");
@@ -32,6 +33,7 @@ const userAnswerInput = document.getElementById("user-answer");
 const submitAnswerBtn = document.getElementById("submit-answer");
 const resultText = document.getElementById("result-text");
 const backBtn = document.getElementById("back-btn");
+const welcomeTitle = document.querySelector("h1"); // Para mostrar "Bienvenido, [Nombre]"
 
 function updateLevel() {
   let sumSessions = 0;
@@ -69,10 +71,33 @@ function updateProgressUI() {
   } else {
     nextChallengeText.textContent = "¡Has alcanzado el nivel máximo! Sigue practicando para mantener la maestría.";
   }
+
+  // Mostrar nombre si existe
+  if(userName) {
+    welcomeTitle.textContent = `Bienvenido, ${userName}`;
+  } else {
+    welcomeTitle.textContent = "Mameno";
+  }
 }
 
 function saveProgress() {
   localStorage.setItem("mamenoProgress", progress);
+}
+
+function saveUserName(name) {
+  userName = name;
+  localStorage.setItem("mamenoUserName", name);
+}
+
+function promptForName() {
+  let name = prompt("¡Felicidades! Has subido de nivel. Ingresa tu nombre para registrar tu avance:");
+  if(name && name.trim() !== "") {
+    saveUserName(name.trim());
+    updateProgressUI();
+    alert(`¡Bienvenido, ${name}! Tu progreso está guardado.`);
+  } else {
+    alert("Nombre no guardado. Puedes ingresarlo la próxima vez que subas de nivel.");
+  }
 }
 
 function getRandomInt(min,max){
@@ -157,11 +182,11 @@ async function showSequence(nums, ops){
     if(abortSequence) break;
     sequenceDisplay.textContent = nums[i];
     playBeep();
-    await delay(2000); // 2 segundos para números
+    await delay(2000);
     if(i < ops.length){
       if(abortSequence) break;
       sequenceDisplay.textContent = ops[i];
-      await delay(1000); // 1 segundo para signos
+      await delay(1000);
     }
   }
   if(!abortSequence) {
@@ -209,6 +234,7 @@ function checkAnswer() {
     return;
   }
   let userVal = Number(val);
+  let previousLevel = currentLevelIndex;
   if(userVal === correctAnswer){
     resultText.style.color = "green";
     resultText.textContent = "¡Correcto! Bien hecho.";
@@ -217,6 +243,10 @@ function checkAnswer() {
     saveProgress();
     updateProgressUI();
     expressionDisplay.textContent = "";
+    // Verificar si subió de nivel
+    if(currentLevelIndex > previousLevel && !userName) {
+      promptForName();
+    }
   } else {
     resultText.style.color = "red";
     expressionDisplay.textContent = buildExpression(sequenceNumbers, sequenceOperators) + " = " + correctAnswer;

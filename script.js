@@ -14,7 +14,7 @@ let correctAnswer = 0;
 let sequenceNumbers = [];
 let sequenceOperators = [];
 let showingSequence = false;
-let abortSequence = false; // Nueva variable para abortar secuencia
+let abortSequence = false;
 
 const levelCurrentEl = document.getElementById("level-current");
 const levelRangeEl = document.getElementById("level-range");
@@ -146,7 +146,7 @@ function playErrorSound() {
 
 async function showSequence(nums, ops){
   showingSequence = true;
-  abortSequence = false; // Reset abort flag
+  abortSequence = false;
   answerInput.style.display = "none";
   resultText.textContent = "";
   expressionDisplay.textContent = "";
@@ -154,14 +154,14 @@ async function showSequence(nums, ops){
   sequenceDisplay.textContent = "";
 
   for(let i=0; i < nums.length; i++) {
-    if(abortSequence) break; // Abort if back button clicked
+    if(abortSequence) break;
     sequenceDisplay.textContent = nums[i];
     playBeep();
-    await delay(1000);
+    await delay(2000); // 2 segundos para números
     if(i < ops.length){
       if(abortSequence) break;
       sequenceDisplay.textContent = ops[i];
-      await delay(1000);
+      await delay(1000); // 1 segundo para signos
     }
   }
   if(!abortSequence) {
@@ -212,7 +212,7 @@ function checkAnswer() {
   if(userVal === correctAnswer){
     resultText.style.color = "green";
     resultText.textContent = "¡Correcto! Bien hecho.";
-    playSuccessSound(); // Sonido de festejo
+    playSuccessSound();
     progress++;
     saveProgress();
     updateProgressUI();
@@ -221,13 +221,13 @@ function checkAnswer() {
     resultText.style.color = "red";
     expressionDisplay.textContent = buildExpression(sequenceNumbers, sequenceOperators) + " = " + correctAnswer;
     resultText.textContent = "Respuesta incorrecta.";
-    playErrorSound(); // Sonido de error
+    playErrorSound();
   }
   answerInput.style.display = "none";
 }
 
 function goBack() {
-  abortSequence = true; // Abort sequence if running
+  abortSequence = true;
   trainingScreen.style.display = "none";
   welcomeScreen.style.display = "block";
   userAnswerInput.value = "";

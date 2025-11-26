@@ -33,7 +33,7 @@ const userAnswerInput = document.getElementById("user-answer");
 const submitAnswerBtn = document.getElementById("submit-answer");
 const resultText = document.getElementById("result-text");
 const backBtn = document.getElementById("back-btn");
-const welcomeTitle = document.querySelector("h1"); // Para mostrar "Bienvenido, [Nombre]"
+const welcomeTitle = document.querySelector("h1");
 
 function updateLevel() {
   let sumSessions = 0;
@@ -67,12 +67,11 @@ function updateProgressUI() {
     let sumNeeded = 0;
     for(let i=0; i<=currentLevelIndex; i++) sumNeeded += levels[i].sessionsRequired;
     let toNext = sumNeeded - progress;
-    nextChallengeText.textContent = `Alcanza ${toNext} sesión${toNext > 1 ? "es" : ""} para desbloquear el rango ${levels[currentLevelIndex + 1].range}.`;
+    nextChallengeText.textContent = `Alcanza ${toNext} sesion${toNext > 1 ? "es" : ""} para desbloquear el rango ${levels[currentLevelIndex + 1].range}.`;
   } else {
     nextChallengeText.textContent = "¡Has alcanzado el nivel máximo! Sigue practicando para mantener la maestría.";
   }
 
-  // Mostrar nombre si existe
   if(userName) {
     welcomeTitle.textContent = `Bienvenido, ${userName}`;
   } else {
@@ -141,9 +140,9 @@ function playSuccessSound() {
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = 'sine';
-  o.frequency.setValueAtTime(523, ctx.currentTime); // Nota Do
-  o.frequency.setValueAtTime(659, ctx.currentTime + 0.1); // Mi
-  o.frequency.setValueAtTime(784, ctx.currentTime + 0.2); // Sol
+  o.frequency.setValueAtTime(523, ctx.currentTime);
+  o.frequency.setValueAtTime(659, ctx.currentTime + 0.1);
+  o.frequency.setValueAtTime(784, ctx.currentTime + 0.2);
   g.gain.setValueAtTime(0.3, ctx.currentTime);
   g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.5);
   o.connect(g);
@@ -158,8 +157,8 @@ function playErrorSound() {
   const o = ctx.createOscillator();
   const g = ctx.createGain();
   o.type = 'sawtooth';
-  o.frequency.setValueAtTime(200, ctx.currentTime); // Frecuencia baja
-  o.frequency.setValueAtTime(150, ctx.currentTime + 0.2); // Descendente
+  o.frequency.setValueAtTime(200, ctx.currentTime);
+  o.frequency.setValueAtTime(150, ctx.currentTime + 0.2);
   g.gain.setValueAtTime(0.2, ctx.currentTime);
   g.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.4);
   o.connect(g);
@@ -234,7 +233,7 @@ function checkAnswer() {
     return;
   }
   let userVal = Number(val);
-  let previousLevel = currentLevelIndex;
+  let oldProgress = progress;
   if(userVal === correctAnswer){
     resultText.style.color = "green";
     resultText.textContent = "¡Correcto! Bien hecho.";
@@ -243,8 +242,17 @@ function checkAnswer() {
     saveProgress();
     updateProgressUI();
     expressionDisplay.textContent = "";
-    // Verificar si subió de nivel
-    if(currentLevelIndex > previousLevel && !userName) {
+    // Verificar si completó un nivel (cada vez que el progreso cruza un umbral de nivel)
+    let levelCompleted = false;
+    let cumulative = 0;
+    for(let i=0; i < levels.length; i++) {
+      cumulative += levels[i].sessionsRequired;
+      if(oldProgress < cumulative && progress >= cumulative) {
+        levelCompleted = true;
+        break;
+      }
+    }
+    if(levelCompleted && !userName) {
       promptForName();
     }
   } else {

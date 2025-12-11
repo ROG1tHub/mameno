@@ -8,6 +8,7 @@
 </head>
 <body>
   <div id="app">
+
     <!-- Pantalla principal -->
     <div class="card" id="welcome-screen">
       <h1>Mameno</h1>
@@ -21,6 +22,7 @@
             <span class="level-range" id="level-range">1-10</span>
           </div>
         </div>
+
         <div class="sessions-info">
           <div class="sessions-number" id="sessions-completed">0</div>
           <div class="sessions-label">Sesiones Completadas</div>
@@ -32,18 +34,20 @@
       </div>
 
       <div class="next-challenge" id="next-challenge">
-        Alcanza 10 sesiones para desbloquear el rango 1-20.
+        Completa 10 sesiones para avanzar.
       </div>
 
       <button id="start-btn">Comenzar</button>
     </div>
 
-    <!-- Pantalla Entrenamiento -->
+    <!-- Pantalla entrenamiento -->
     <div id="training-screen" style="display:none;">
+
       <div id="sequence-display"></div>
+
       <div id="expression-display"></div>
 
-      <!-- Checkbox ayuda visual (solo niveles superiores) -->
+      <!-- Checkbox ayuda visual -->
       <label id="visual-aid-container" style="display:none;">
         <input type="checkbox" id="visual-aid-toggle">
         Mostrar ayuda visual
@@ -58,6 +62,7 @@
 
       <button id="back-btn">← Volver</button>
     </div>
+
   </div>
 
   <script src="script.js"></script>
